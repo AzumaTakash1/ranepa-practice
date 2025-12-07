@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Дашборд SLA по видам инцидентов и услуг</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    .shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #020617;
+      border-radius: 24px;
+      padding: 18px 20px 24px;
+      border: 1px solid #1e293b;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .filter {
+      background: #020617;
+      border-radius: 999px;
+      border: 1px solid #1e293b;
+      padding: 5px 10px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #cbd5f5;
+    }
+    .filter span {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .kpi-card {
+      background: #020617;
+      border-radius: 16px;
+      border: 1px solid #1f2937;
+      padding: 10px 11px 11px;
+      font-size: 12px;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .kpi-trend {
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    .kpi-trend.up { color: #4ade80; }
+    .kpi-trend.down { color: #f97373; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      margin-left: 4px;
+    }
+    .tag-warn { background: #451a03; color: #fed7aa; }
+    .tag-ok { background: #022c22; color: #bbf7d0; }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.6fr 1.4fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 16px;
+      border: 1px solid #1f2937;
+      padding: 10px 12px 12px;
+      font-size: 12px;
+    }
+    .card h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+    .card small {
+      color: #64748b;
+      font-size: 11px;
+    }
+    .chart-placeholder {
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px dashed #334155;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      height: 210px;
+      position: relative;
+      overflow: hidden;
+    }
+    .chart-overlay-text {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 10px;
+      color: #64748b;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 11px;
+    }
+    th, td {
+      border-bottom: 1px solid #0f172a;
+      padding: 5px 4px;
+      text-align: left;
+    }
+    th {
+      color: #9ca3af;
+      font-weight: 500;
+    }
+    .sla-good { color: #bbf7d0; }
+    .sla-risk { color: #facc15; }
+    .sla-bad { color: #fecaca; }
+    .service-pill {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #0b1120;
+      color: #e5e7eb;
+      border: 1px solid #1f2937;
+    }
+    .legend {
+      font-size: 10px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1.7fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .bar-legend {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="header">
+      <div>
+        <div class="title">SLA по видам инцидентов и услуг</div>
+        <div class="subtitle">Время выполнения SLA (TTR) и соблюдение SLA по типам услуг/инцидентов</div>
+      </div>
+      <div style="font-size:11px; color:#9ca3af; text-align:right;">
+        Период: текущий месяц · Обновлено: 10:32<br>
+        Режим: все пункты выдачи · все приоритеты
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="filter"><span>Период</span> Текущий месяц ▼</div>
+      <div class="filter"><span>Пункт выдачи</span> Все локации ▼</div>
+      <div class="filter"><span>Приоритет</span> Все приоритеты ▼</div>
+      <div class="filter"><span>Тип</span> Инциденты + запросы ▼</div>
+      <div class="filter"><span>Канал</span> Терминал + портал + бот ▼</div>
+    </div>
+
+    <!-- KPI по SLA в целом -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Средний TTR по всем видам услуг</div>
+        <div class="kpi-value">01.9 <span style="font-size:11px;">ч</span></div>
+        <div class="kpi-trend up">▼ -0.3 ч к прошлому периоду</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">P90 TTR</div>
+        <div class="kpi-value">04.8 <span style="font-size:11px;">ч</span></div>
+        <div class="kpi-trend down">▲ +0.4 ч · требуется внимание</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Соблюдение SLA (все виды)</div>
+        <div class="kpi-value">91.2 <span style="font-size:11px;">%</span></div>
+        <div class="kpi-trend up">▼ +2.5 п.п.<span class="tag tag-ok">цель ≥ 90%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Инциденты с нарушением SLA</div>
+        <div class="kpi-value">8.8 <span style="font-size:11px;">%</span></div>
+        <div class="kpi-trend down">▲ выше нормы<span class="tag tag-warn">анализ проблемных видов</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Средний TTR по Critical</div>
+        <div class="kpi-value">01.2 <span style="font-size:11px;">ч</span></div>
+        <div class="kpi-trend up">▼ полностью в целевом SLA</div>
+      </div>
+    </div>
+
+    <div class="grid-main">
+      <!-- Левый блок: диаграмма по видам инцидентов -->
+      <div class="card">
+        <h3>TTR и целевой SLA по видам инцидентов</h3>
+        <small>Среднее время решения и целевое SLA по типам</small>
+        <div class="chart-placeholder">
+          <div class="chart-overlay-text">
+            Группированный bar-chart: по оси X – тип инцидента,<br>
+            для каждого столбцы: avg TTR, целевой SLA TTR, P90 TTR.
+          </div>
+        </div>
+        <div class="legend">
+          Основано на resolved_time - created_time, сгруппировано по service_type / incident_type. 
+          Отдельные линии/столбцы показывают отклонение TTR от целевого SLA.
+        </div>
+      </div>
+
+      <!-- Правый блок: таблица по видам -->
+      <div class="card">
+        <h3>Разрез SLA по видам инцидентов / услуг</h3>
+        <small>Сводка по основным типам</small>
+        <table>
+          <thead>
+            <tr>
+              <th>Вид услуги / инцидента</th>
+              <th>Целевой SLA TTR</th>
+              <th>Средний TTR</th>
+              <th>P90 TTR</th>
+              <th>Собл. SLA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="service-pill">Ноутбук не включается / критическая работоспособность</span></td>
+              <td>02:00 ч</td>
+              <td class="sla-good">01:15 ч</td>
+              <td class="sla-good">01:55 ч</td>
+              <td class="sla-good">96%</td>
+            </tr>
+            <tr>
+              <td><span class="service-pill">Доступы / VPN / удалённая работа</span></td>
+              <td>01:00 ч</td>
+              <td class="sla-risk">01:12 ч</td>
+              <td class="sla-bad">02:10 ч</td>
+              <td class="sla-risk">88%</td>
+            </tr>
+            <tr>
+              <td><span class="service-pill">Установка и обновление ПО</span></td>
+              <td>04:00 ч</td>
+              <td class="sla-good">02:40 ч</td>
+              <td class="sla-good">03:30 ч</td>
+              <td class="sla-good">94%</td>
+            </tr>
+            <tr>
+              <td><span class="service-pill">Восстановление данных</span></td>
+              <td>24:00 ч</td>
+              <td class="sla-risk">26:30 ч</td>
+              <td class="sla-bad">36:00 ч</td>
+              <td class="sla-bad">71%</td>
+            </tr>
+            <tr>
+              <td><span class="service-pill">Выдача нового устройства / замена</span></td>
+              <td>08:00 ч</td>
+              <td class="sla-good">05:40 ч</td>
+              <td class="sla-risk">09:10 ч</td>
+              <td class="sla-risk">89%</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="legend">
+          Виды инцидентов/услуг берутся из справочника service_catalog. 
+          TTR и соблюдение SLA рассчитываются по каждой записи и агрегируются по типу.
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <!-- Левый низ: проблемные виды -->
+      <div class="card">
+        <h3>Проблемные виды услуг по SLA</h3>
+        <small>Типы, где средний TTR стабильно выше SLA</small>
+        <table>
+          <thead>
+            <tr>
+              <th>Вид услуги</th>
+              <th>Δ TTR vs SLA</th>
+              <th>Собл. SLA</th>
+              <th>Основная причина</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Восстановление данных</td>
+              <td class="sla-bad">+02:30 ч</td>
+              <td class="sla-bad">71%</td>
+              <td>ожидание работы ИБ / сложность кейсов</td>
+            </tr>
+            <tr>
+              <td>Доступы / VPN</td>
+              <td class="sla-risk">+00:12 ч</td>
+              <td class="sla-risk">88%</td>
+              <td>эскалации в ИБ, согласования</td>
+            </tr>
+            <tr>
+              <td>Замена устройства (при отсутствии на складе)</td>
+              <td class="sla-risk">+01:10 ч</td>
+              <td class="sla-risk">83%</td>
+              <td>цепочка «закупки → склад → инженер»</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="legend">
+          Δ TTR vs SLA = avg(TTR) - target_SLA_TTR. 
+          Можно использовать для приоритизации улучшений и согласования изменений в процессах.
+        </div>
+      </div>
+
+      <!-- Правый низ: распределение по приоритетам внутри видов -->
+      <div class="card">
+        <h3>Соблюдение SLA по приоритетам и видам услуг</h3>
+        <small>Матрица: приоритет × вид услуги</small>
+        <div class="chart-placeholder">
+          <div class="chart-overlay-text">
+            Heatmap / матрица: по оси X — приоритет (Critical, High, Normal), по оси Y — виды услуг.<br>
+            Цветом отмечен % соблюдения SLA.
+          </div>
+        </div>
+        <div class="bar-legend">
+          Пример: Critical по «Ноутбук не включается» – 99%, Normal по «Восстановление данных» – 64% и т.д.
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

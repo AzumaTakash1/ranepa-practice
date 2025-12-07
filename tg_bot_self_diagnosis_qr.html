@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>TP Service Bot – самообслуживание по QR</title>
+  <style>
+  
+  body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f5f7fb; margin:0; padding:0; }
+  .app { max-width: 420px; margin: 24px auto; border-radius: 18px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08); background:#fff; border:1px solid #e3e8f5;}
+  .app-header { padding:12px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #e3e8f5; background:#f8fafc; }
+  .avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#2563eb,#22c55e); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; }
+  .title { font-size:15px; font-weight:600; }
+  .subtitle { font-size:11px; color:#64748b; }
+  .screen { padding:14px 14px 72px; background:#eff3fb; min-height:480px; position:relative; }
+  .chip { display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:4px 8px; border-radius:999px; background:#e0edff; color:#1d4ed8; margin-bottom:8px;}
+  .chip-dot { width:6px; height:6px; border-radius:999px; background:#22c55e; }
+  .msg { max-width:78%; padding:9px 11px; border-radius:13px; font-size:13px; line-height:1.35; margin:6px 0; box-shadow:0 1px 3px rgba(15,23,42,0.06); }
+  .msg-bot { background:#fff; border-bottom-left-radius:3px; }
+  .msg-user { background:#2563eb; color:#fff; margin-left:auto; border-bottom-right-radius:3px; }
+  .msg-meta { font-size:10px; color:#94a3b8; margin-top:2px; }
+  .quick-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .qa-btn { font-size:11px; padding:5px 8px; border-radius:999px; background:#0f172a; color:#e5e7eb; border:none; }
+  .input-bar { position:absolute; left:0; right:0; bottom:0; padding:10px 12px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; gap:8px; }
+  .input-field { flex:1; border-radius:999px; border:1px solid #d4d4d8; padding:7px 11px; font-size:13px; outline:none; }
+  .send-btn { border-radius:999px; background:#2563eb; color:#fff; border:none; padding:0 12px; font-size:13px; }
+  .form-block { margin-top:4px; padding:7px 8px; border-radius:10px; background:#eff6ff; border:1px solid #bfdbfe; font-size:11px; color:#1e3a8a; }
+  .form-row { margin-top:4px; }
+  .form-label { font-size:11px; color:#1d4ed8; margin-bottom:2px; }
+  .pill-option { display:inline-block; margin:2px 4px 0 0; padding:3px 7px; border-radius:999px; font-size:11px; background:#1d4ed8; color:#e0f2fe; }
+  .video-card { margin-top:6px; border-radius:12px; background:#0f172a; color:#e5e7eb; padding:8px; display:flex; gap:8px; }
+  .video-thumb { width:80px; height:56px; border-radius:8px; background:radial-gradient(circle at top,#22c55e,#0f172a); display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .video-body { flex:1; }
+  .video-title { font-size:13px; font-weight:600; margin-bottom:2px; }
+  .video-meta { font-size:10px; color:#9ca3af; margin-bottom:4px; }
+  .video-btn { font-size:11px; padding:5px 9px; border-radius:999px; border:none; background:#22c55e; color:#022c22; cursor:pointer; }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="app-header">
+      <div class="avatar">T</div>
+      <div>
+        <div class="title">TP Service Bot</div>
+        <div class="subtitle">самостоятельная диагностика по QR</div>
+      </div>
+    </div>
+    <div class="screen">
+      <div class="chip"><span class="chip-dot"></span>QR-код с устройства считан</div>
+
+      <div class="msg msg-bot">
+        Привет! 👋<br>
+        Я вижу, что вы отсканировали QR-код с устройства.<br><br>
+        Я помогу выполнить быструю самодиагностику, а при необходимости подключим инженера.
+        <div class="msg-meta">бот • 10:01</div>
+      </div>
+
+      <div class="msg msg-bot">
+        Смотрю данные по вашему устройству…<br><br>
+        <b>Тип:</b> Ноутбук<br>
+        <b>Модель:</b> Lenovo ThinkPad T14<br>
+        <b>ID:</b> EQP-NTB-01423 · инв. № 004571
+        <div class="msg-meta">бот • 10:01</div>
+      </div>
+
+      <div class="msg msg-bot">
+        Чтобы подобрать подходящее видео с инструкцией, ответьте, пожалуйста, на несколько коротких вопросов 👇
+        <div class="form-block">
+          <div class="form-row">
+            <div class="form-label">1. Что ближе всего к вашей проблеме?</div>
+            <span class="pill-option">💡 Не включается</span>
+            <span class="pill-option">🌀 Постоянные перезагрузки</span>
+            <span class="pill-option">🐢 Тормозит</span>
+            <span class="pill-option">📶 Проблемы с Wi‑Fi</span>
+          </div>
+          <div class="form-row">
+            <div class="form-label">2. Насколько это срочно?</div>
+            <span class="pill-option">⚡ Критично — не могу работать</span>
+            <span class="pill-option">⏱ Важно, но могу подождать</span>
+          </div>
+          <div class="form-row">
+            <div class="form-label">3. Ноутбук реагирует на кнопку питания?</div>
+            <span class="pill-option">Да, экран загорается</span>
+            <span class="pill-option">Есть шум/огни, но экран чёрный</span>
+            <span class="pill-option">Вообще никакой реакции</span>
+          </div>
+        </div>
+        <div class="msg-meta">бот • 10:02</div>
+      </div>
+
+      <div class="msg msg-user">
+        Не включается, критично, вообще не реагирует на кнопку.
+        <div class="msg-meta">вы • 10:03</div>
+      </div>
+
+      <div class="msg msg-bot">
+        Понял, спасибо 🙌<br>
+        Для такой ситуации у меня есть короткая видеоинструкция по базовой проверке питания и подключения док-станции.<br>
+        Выполните шаги из видео, это займет 3–5 минут.
+        <div class="video-card">
+          <div class="video-thumb">▶</div>
+          <div class="video-body">
+            <div class="video-title">Видео: Ноутбук не включается — базовая проверка</div>
+            <div class="video-meta">Длительность: 3:40 · шаги: кабель, адаптер, док-станция, индикаторы питания</div>
+            <button class="video-btn">Смотреть видеоинструкцию</button>
+          </div>
+        </div>
+        <div class="msg-meta">бот • 10:03</div>
+      </div>
+
+      <div class="msg msg-bot">
+        После просмотра видео нажмите, пожалуйста, одну из кнопок:
+        <div class="quick-actions">
+          <button class="qa-btn">✅ Помогло, всё заработало</button>
+          <button class="qa-btn">❌ Не помогло, нужна помощь инженера</button>
+        </div>
+        <div class="msg-meta">бот • 10:04</div>
+      </div>
+
+      <div class="input-bar">
+        <input class="input-field" placeholder="Напишите, что произошло после выполнения шагов…">
+        <button class="send-btn">▶</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>ITSM – Панель инцидентов для сервис‑инженера</title>
+  <style>
+    body { font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#020617; margin:0; padding:18px; color:#e5e7eb; }
+    .frame { max-width: 1200px; margin:0 auto; background:#020617; border-radius:20px; border:1px solid #1e293b; padding:16px 18px 20px; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+    .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .top-left { display:flex; align-items:center; gap:10px; }
+    .badge { font-size:11px; padding:3px 7px; border-radius:999px; border:1px solid #22c55e55; background:#022c22; color:#bbf7d0; }
+    .engineer { display:flex; align-items:center; gap:10px; font-size:13px; }
+    .avatar { width:30px; height:30px; border-radius:999px; background:linear-gradient(135deg,#38bdf8,#6366f1); display:flex; align-items:center; justify-content:center; }
+    .layout { display:grid; grid-template-columns:260px 1fr 270px; gap:14px; margin-top:8px; }
+    .card { background:#020617; border-radius:16px; border:1px solid #1f2937; padding:10px 12px 12px; font-size:12px; }
+    .card h3 { font-size:13px; margin:0 0 6px; }
+    .filter-pill { font-size:11px; padding:3px 7px; border-radius:999px; border:1px solid #334155; display:inline-flex; align-items:center; gap:6px; margin:2px 3px 4px 0; }
+    .filter-pill span { width:7px; height:7px; border-radius:999px; }
+    .f-critical span { background:#f97373; }
+    .f-high span { background:#fb923c; }
+    .f-normal span { background:#22c55e; }
+    .table { width:100%; border-collapse:collapse; }
+    th, td { padding:6px 4px; border-bottom:1px solid #0f172a; font-size:11px; }
+    th { text-align:left; color:#94a3b8; font-weight:500; }
+    .tag { font-size:10px; padding:2px 6px; border-radius:999px; }
+    .tag-critical { background:#7f1d1d; color:#fecaca; }
+    .tag-sla { background:#0b1120; color:#bfdbfe; border:1px solid #1d4ed8; }
+    .tag-queue { background:#022c22; color:#a7f3d0; }
+    .row-active { background:#020617; box-shadow:0 0 0 1px #1d4ed8; }
+    .kpi-item { font-size:11px; margin-bottom:4px; color:#94a3b8; }
+    .kpi-item span { color:#e5e7eb; }
+    .btn-primary { background:#2563eb; border:none; border-radius:999px; color:#e5e7eb; font-size:11px; padding:6px 10px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="top">
+      <div class="top-left">
+        <div style="font-size:13px; font-weight:600;">Панель инцидентов</div>
+        <div class="badge">Смена: 09:00–18:00</div>
+      </div>
+      <div class="engineer">
+        <div>
+          <div>Кирилл Сервисов</div>
+          <div style="font-size:11px; color:#64748b;">Сервис-инженер · Сервисный хаб</div>
+        </div>
+        <div class="avatar">K</div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h3>Фильтры</h3>
+        <div>
+          <div class="filter-pill f-critical"><span></span>Critical (3)</div>
+          <div class="filter-pill f-high"><span></span>High (7)</div>
+          <div class="filter-pill f-normal"><span></span>Normal (24)</div>
+        </div>
+        <div style="margin-top:10px;">
+          <h3>Мои показатели</h3>
+          <div class="kpi-item">Открыто сейчас: <span>12</span></div>
+          <div class="kpi-item">Выполнено за смену: <span>27</span></div>
+          <div class="kpi-item">Среднее время на инцидент: <span>11 мин</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Текущие инциденты</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Описание</th>
+              <th>Приоритет</th>
+              <th>SLA</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-active">
+              <td>CI‑10243</td>
+              <td>Ноутбук не включается · Мария</td>
+              <td><span class="tag tag-critical">Critical</span></td>
+              <td><span class="tag tag-sla">осталось 00:24</span></td>
+              <td><span class="tag tag-queue">ожидает клиента</span></td>
+            </tr>
+            <tr>
+              <td>SR‑8841</td>
+              <td>Не работает VPN</td>
+              <td><span class="tag" style="background:#451a03; color:#fed7aa;">High</span></td>
+              <td><span class="tag tag-sla">осталось 03:15</span></td>
+              <td><span class="tag" style="background:#0f172a; color:#e5e7eb;">в работе</span></td>
+            </tr>
+            <tr>
+              <td>SR‑8802</td>
+              <td>Установка ПО</td>
+              <td><span class="tag" style="background:#052e16; color:#bbf7d0;">Normal</span></td>
+              <td><span class="tag" style="background:#020617; color:#94a3b8;">до 18:00</span></td>
+              <td><span class="tag" style="background:#0b1120; color:#e5e7eb;">ожидает заказчика</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Выбранный инцидент</h3>
+        <div style="font-size:11px; color:#94a3b8; margin-bottom:4px;">CI‑10243 · Критический инцидент</div>
+        <div style="font-size:12px; margin-bottom:6px;">Клиент: <strong>Мария Иванова</strong> · Маркетинг</div>
+        <div class="kpi-item">Проблема: <span>ноутбук не включается, горят дедлайны</span></div>
+        <div class="kpi-item">Текущее состояние: <span>ожидает появления клиента в сервисном хабе</span></div>
+        <div class="kpi-item">Следующее действие: <span>вызвать клиента и выдать временное устройство</span></div>
+        <div style="margin-top:10px; display:flex; gap:6px;">
+          <button class="btn-primary">Вызвать клиента</button>
+          <button class="btn-primary" style="background:#16a34a;">Выдать временное устройство</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

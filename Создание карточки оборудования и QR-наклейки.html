@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Создание карточки оборудования и QR-наклейки – экран сервис-инженера</title>
+  <style>
+    body {
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:#020617;
+      margin:0;
+      padding:20px;
+      color:#e5e7eb;
+    }
+    .frame {
+      max-width: 1200px;
+      margin:0 auto;
+      background:#020617;
+      border-radius:20px;
+      border:1px solid #1e293b;
+      padding:16px 18px 20px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    }
+    .header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:14px;
+    }
+    .title {
+      font-size:18px;
+      font-weight:600;
+    }
+    .subtitle {
+      font-size:12px;
+      color:#64748b;
+    }
+    .engineer {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:13px;
+    }
+    .avatar {
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#38bdf8,#6366f1);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:16px;
+    }
+    .badge {
+      font-size:11px;
+      padding:2px 7px;
+      border-radius:999px;
+      background:#0b1120;
+      border:1px solid #1d4ed8;
+      color:#bfdbfe;
+      margin-top:4px;
+      display:inline-block;
+    }
+    .layout {
+      display:grid;
+      grid-template-columns:1.4fr 1.6fr;
+      gap:14px;
+      margin-top:8px;
+    }
+    .card {
+      background:#020617;
+      border-radius:16px;
+      border:1px solid #1f2937;
+      padding:10px 12px 12px;
+      font-size:12px;
+    }
+    .card h3 {
+      font-size:13px;
+      margin:0 0 6px;
+    }
+    .card small {
+      font-size:11px;
+      color:#64748b;
+    }
+    .form-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px 10px;
+      margin-top:8px;
+    }
+    .field {
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+    .label {
+      font-size:11px;
+      color:#9ca3af;
+    }
+    .input, .select {
+      background:#020617;
+      border-radius:9px;
+      border:1px solid #1f2937;
+      padding:6px 8px;
+      font-size:12px;
+      color:#e5e7eb;
+      outline:none;
+    }
+    .input:focus, .select:focus {
+      border-color:#2563eb;
+      box-shadow:0 0 0 1px #1d4ed8;
+    }
+    .row {
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+    }
+    .btn-primary {
+      background:#2563eb;
+      border:none;
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:12px;
+      color:#e5e7eb;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .btn-secondary {
+      background:#0b1120;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      border:1px solid #1f2937;
+      color:#cbd5f5;
+      cursor:pointer;
+    }
+    .hint {
+      font-size:10px;
+      color:#6b7280;
+      margin-top:4px;
+    }
+    .qr-layout {
+      display:grid;
+      grid-template-columns:1.1fr 1fr;
+      gap:10px;
+      margin-top:8px;
+    }
+    .preview-block {
+      background:#020617;
+      border-radius:14px;
+      border:1px solid #1f2937;
+      padding:8px 10px 10px;
+      font-size:11px;
+    }
+    .preview-label {
+      font-size:11px;
+      color:#9ca3af;
+      margin-bottom:4px;
+    }
+    .qr-sticker {
+      background:#f9fafb;
+      border-radius:12px;
+      border:1px solid #d1d5db;
+      padding:8px 10px;
+      color:#111827;
+      width:210px;
+      height:110px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow:0 8px 18px rgba(15,23,42,0.25);
+    }
+    .qr-left {
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      height:100%;
+    }
+    .qr-text {
+      font-size:12px;
+      font-weight:600;
+      line-height:1.35;
+    }
+    .qr-emoji {
+      font-size:20px;
+      margin-top:4px;
+    }
+    .qr-meta {
+      font-size:9px;
+      color:#4b5563;
+      margin-top:6px;
+    }
+    .qr-code-box {
+      width:72px;
+      height:72px;
+      border-radius:6px;
+      border:2px solid #111827;
+      background:repeating-linear-gradient(
+        45deg,
+        #111827,
+        #111827 2px,
+        #e5e7eb 2px,
+        #e5e7eb 4px
+      );
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:9px;
+      color:#f9fafb;
+    }
+    .qr-footer {
+      font-size:10px;
+      color:#6b7280;
+      margin-top:6px;
+    }
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:11px;
+    }
+    th, td {
+      border-bottom:1px solid #0f172a;
+      padding:5px 4px;
+      text-align:left;
+    }
+    th {
+      color:#9ca3af;
+      font-weight:500;
+    }
+    .pill {
+      font-size:10px;
+      padding:2px 6px;
+      border-radius:999px;
+      background:#0b1120;
+      border:1px solid #1f2937;
+      color:#cbd5f5;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="header">
+      <div>
+        <div class="title">Создание карточки оборудования и QR-наклейки</div>
+        <div class="subtitle">Сервисный хаб · учёт устройств и быстрый доступ к поддержке</div>
+      </div>
+      <div class="engineer">
+        <div>
+          <div>Кирилл Сервисов</div>
+          <div style="font-size:11px; color:#64748b;">Сервис-инженер</div>
+          <span class="badge">Режим: регистрация нового устройства</span>
+        </div>
+        <div class="avatar">K</div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- Левая колонка: форма создания карточки оборудования -->
+      <div class="card">
+        <h3>Карточка оборудования</h3>
+        <small>Заполните данные устройства — система сгенерирует уникальный QR-код.</small>
+
+        <div class="form-grid">
+          <div class="field">
+            <div class="label">Инвентарный номер</div>
+            <input class="input" placeholder="Например, 004571" value="004571">
+          </div>
+          <div class="field">
+            <div class="label">Уникальный ID в системе</div>
+            <input class="input" placeholder="Генерируется автоматически" value="EQP-NTB-01423">
+          </div>
+          <div class="field">
+            <div class="label">Тип устройства</div>
+            <select class="select">
+              <option>Ноутбук</option>
+              <option>Моноблок</option>
+              <option>Монитор</option>
+              <option>Принтер / МФУ</option>
+              <option>Сетевое оборудование</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="label">Модель</div>
+            <input class="input" placeholder="Например, Lenovo ThinkPad T14" value="Lenovo ThinkPad T14">
+          </div>
+          <div class="field">
+            <div class="label">Подразделение / зона</div>
+            <input class="input" placeholder="Офис Москва · Маркетинг" value="Офис Москва · Маркетинг">
+          </div>
+          <div class="field">
+            <div class="label">Серийный номер</div>
+            <input class="input" placeholder="SN..." value="SN-LT14-9328172">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:8px;">
+          <div class="label">Комментарий / особенности</div>
+          <input class="input" placeholder="Например: устройство выдано Марии Ивановой, критичные задачи">
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn-primary">⚙️ Сгенерировать карточку и QR-код</button>
+          <button class="btn-secondary">Сбросить форму</button>
+        </div>
+        <div class="hint">
+          После генерации карточка будет сохранена в системе инвентаризации, а QR-наклейку можно отправить на печать.
+        </div>
+      </div>
+
+      <!-- Правая колонка: предпросмотр QR-наклейки и список последнего оборудования -->
+      <div class="card">
+        <h3>QR-наклейка для печати</h3>
+        <small>Наклейте на устройство, чтобы пользователю было проще обратиться за помощью.</small>
+
+        <div class="qr-layout">
+          <div class="preview-block">
+            <div class="preview-label">Предпросмотр наклейки (100×50 мм, термопринтер)</div>
+            <div class="qr-sticker">
+              <div class="qr-left">
+                <div class="qr-text">
+                  Отсканируй меня,<br>
+                  если нужна помощь
+                </div>
+                <div class="qr-emoji">👋</div>
+                <div class="qr-meta">
+                  ID: EQP-NTB-01423 · инв. № 004571<br>
+                  Service HUB · Tech Support
+                </div>
+              </div>
+              <div class="qr-code-box">
+                QR CODE<br>
+                EQP-NTB-01423
+              </div>
+            </div>
+            <div class="qr-footer">
+              Пользователь сканирует QR → открывается бот/портал с уже заполненными данными этого устройства.
+            </div>
+          </div>
+
+          <div class="preview-block">
+            <div class="preview-label">Последние созданные устройства</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Инв. №</th>
+                  <th>Тип</th>
+                  <th>Статус</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>EQP-NTB-01423</td>
+                  <td>004571</td>
+                  <td>Ноутбук</td>
+                  <td><span class="pill">QR создан</span></td>
+                </tr>
+                <tr>
+                  <td>EQP-MON-00811</td>
+                  <td>003982</td>
+                  <td>Монитор</td>
+                  <td><span class="pill">QR создан</span></td>
+                </tr>
+                <tr>
+                  <td>EQP-NET-00221</td>
+                  <td>002147</td>
+                  <td>Сетевое</td>
+                  <td><span class="pill">ожидает печати</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="hint">
+              При печати QR-наклейки фиксируйте это событие, чтобы отслеживать, где уже размещены стикеры.
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn-primary">🖨 Отправить QR-наклейку на печать</button>
+          <button class="btn-secondary">Скачать в PDF / PNG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
